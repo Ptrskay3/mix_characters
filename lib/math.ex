@@ -7,11 +7,14 @@ defmodule Csv.Math do
   end
 
   def heaviest(state) do
-    state
-    |> Csv.Query.get_column(:mass)
-    |> Enum.filter(&(!is_nil(&1)))
-    |> Enum.map(&to_number(&1))
-    |> Enum.reject(&(!&1))
-    |> Enum.max()
+    names = state |> Csv.Query.get_column(:name)
+    masses = state |> Csv.Query.get_column(:mass)
+
+    names
+    |> Stream.zip(masses)
+    |> Stream.filter(fn {_, mass} -> !is_nil(mass) end)
+    |> Stream.map(fn {name, mass} -> {name, to_number(mass)} end)
+    |> Stream.reject(fn {_, mass} -> !mass end)
+    |> Enum.max_by(fn {_, mass} -> mass end)
   end
 end
