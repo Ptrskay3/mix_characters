@@ -1,4 +1,6 @@
 defmodule Csv.Math do
+  @genders ["NA", "female", "male", "none", "hermaphrodite"]
+
   defp to_number(item) do
     case Float.parse(item) do
       {num, ""} -> num
@@ -26,5 +28,28 @@ defmodule Csv.Math do
     sum = valid_rows |> Enum.sum()
 
     sum / count
+  end
+
+  def age_distribution(state) do
+    # groups =
+    Csv.Query.get_columns(state, [:gender, :birth_year])
+    |> Enum.group_by(fn {gender, _} -> gender end)
+
+    # |> Enum.map(fn {_, v} -> v |> Enum.map(fn {_, v} -> v end) end)
+
+    # groups |> Enum.map(&Enum.filter(&1, fn a -> a != "NA" end))
+  end
+
+  def categorizer(age) when is_number(age) do
+    case age do
+      x when 0 < x and x < 21 -> :young
+      x when x >= 21 and x < 40 -> :middle
+      x when x >= 40 -> :old
+      _ -> :unknown
+    end
+  end
+
+  def categorizer(_age) do
+    :unknown
   end
 end
