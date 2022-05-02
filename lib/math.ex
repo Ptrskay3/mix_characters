@@ -27,7 +27,7 @@ defmodule Csv.Math do
       |> Enum.group_by(fn {gender, _} -> partition_by_gender(gender) end)
 
     for {category, rows} <- groups do
-      filtered =
+      statistics =
         rows
         |> List.flatten()
         |> Enum.map(fn {gender, age} ->
@@ -38,13 +38,14 @@ defmodule Csv.Math do
         end)
         |> Enum.frequencies_by(fn {_, age} -> partition_by_age(age) end)
 
-      %{category => filtered}
+      %{category => statistics}
     end
     |> flatten_into_map
   end
 
   # Utility functions. They might have a common module, but it's fine for now..
 
+  # I'd rather use atoms instead of these magic strings, but let's stick to the description.
   defp partition_by_gender(gender) do
     case gender do
       "female" -> "female"
@@ -55,15 +56,15 @@ defmodule Csv.Math do
 
   defp partition_by_age(age) when is_number(age) do
     case age do
-      x when 0 < x and x < 21 -> :young
-      x when x >= 21 and x < 40 -> :middle
-      x when x >= 40 -> :old
-      _ -> :unknown
+      x when 0 < x and x < 21 -> "below 21"
+      x when x >= 21 and x < 40 -> "between 21 and 40"
+      x when x >= 40 -> "above 40"
+      _ -> "unknown"
     end
   end
 
   defp partition_by_age(_age) do
-    :unknown
+    "unknown"
   end
 
   defp to_number(item) do
