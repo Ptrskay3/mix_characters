@@ -1,11 +1,4 @@
 defmodule Csv.Math do
-  defp to_number(item) do
-    case Float.parse(item) do
-      {num, ""} -> num
-      _ -> false
-    end
-  end
-
   def heaviest(state) do
     Csv.Query.get_columns(state, [:name, :mass])
     |> Stream.filter(fn {_, mass} -> !is_nil(mass) end)
@@ -28,7 +21,7 @@ defmodule Csv.Math do
     sum / count
   end
 
-  def age_distribution(state) do
+  def distribution_by_age(state) do
     groups =
       Csv.Query.get_columns(state, [:gender, :birth_year])
       |> Enum.group_by(fn {gender, _} -> partition_by_gender(gender) end)
@@ -43,14 +36,14 @@ defmodule Csv.Math do
             false -> {gender, age}
           end
         end)
-        |> Enum.group_by(fn {_, age} -> partition_by_age(age) end)
-        |> Enum.map(fn {group, elems} -> %{group => elems |> length} end)
-        |> flatten_into_map
+        |> Enum.frequencies_by(fn {_, age} -> partition_by_age(age) end)
 
       %{category => filtered}
     end
     |> flatten_into_map
   end
+
+  # Utility functions. They might have a common module, but it's fine for now..
 
   defp partition_by_gender(gender) do
     case gender do
@@ -71,6 +64,13 @@ defmodule Csv.Math do
 
   defp partition_by_age(_age) do
     :unknown
+  end
+
+  defp to_number(item) do
+    case Float.parse(item) do
+      {num, ""} -> num
+      _ -> false
+    end
   end
 
   defp flatten_into_map(list) when is_list(list) do
