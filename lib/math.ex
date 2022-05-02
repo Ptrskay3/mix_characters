@@ -1,6 +1,4 @@
 defmodule Csv.Math do
-  @genders ["NA", "female", "male", "none", "hermaphrodite"]
-
   defp to_number(item) do
     case Float.parse(item) do
       {num, ""} -> num
@@ -31,16 +29,36 @@ defmodule Csv.Math do
   end
 
   def age_distribution(state) do
-    # groups =
-    Csv.Query.get_columns(state, [:gender, :birth_year])
-    |> Enum.group_by(fn {gender, _} -> gender end)
+    groups =
+      Csv.Query.get_columns(state, [:gender, :birth_year])
+      |> Enum.group_by(fn {gender, _} -> partition_by_gender(gender) end)
 
-    # |> Enum.map(fn {_, v} -> v |> Enum.map(fn {_, v} -> v end) end)
+    for {category, rows} <- groups do
+      filtered =
+        rows
+        |> List.flatten()
+        |> Enum.map(fn {gender, age} ->
+          case String.ends_with?(age, "BBY") do
+            true -> {gender, String.trim_trailing(age, "BBY") |> to_number}
+            false -> {gender, age}
+          end
+        end)
+        |> Enum.group_by(fn {_, age} -> partition_by_age(age) end)
+        |> Enum.map(fn {group, elems} -> %{"age_group" => group, "count" => elems |> length} end)
 
-    # groups |> Enum.map(&Enum.filter(&1, fn a -> a != "NA" end))
+      %{category => filtered}
+    end
   end
 
-  def categorizer(age) when is_number(age) do
+  defp partition_by_gender(gender) do
+    case gender do
+      "female" -> :female
+      "male" -> :male
+      _ -> :other
+    end
+  end
+
+  defp partition_by_age(age) when is_number(age) do
     case age do
       x when 0 < x and x < 21 -> :young
       x when x >= 21 and x < 40 -> :middle
@@ -49,7 +67,7 @@ defmodule Csv.Math do
     end
   end
 
-  def categorizer(_age) do
+  defp partition_by_age(_age) do
     :unknown
   end
 end
