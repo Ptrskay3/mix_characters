@@ -20,6 +20,10 @@ defmodule Csv.Server do
     GenServer.call(pid, {:avg_height, :male})
   end
 
+  def distribution_by_age(pid) do
+    GenServer.call(pid, :age_distribution)
+  end
+
   # Server API
 
   @impl true
@@ -43,5 +47,11 @@ defmodule Csv.Server do
   def handle_call({:avg_height, :male}, _from, state) do
     avg = Csv.Math.average_height_by_gender(state, "male")
     {:reply, "The average height among males is #{avg}!", state}
+  end
+
+  @impl true
+  def handle_call(:age_distribution, _from, state) do
+    stats = Csv.Math.distribution_by_age(state)
+    {:reply, stats, state}
   end
 end
