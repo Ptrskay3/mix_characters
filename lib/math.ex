@@ -44,17 +44,19 @@ defmodule Csv.Math do
           end
         end)
         |> Enum.group_by(fn {_, age} -> partition_by_age(age) end)
-        |> Enum.map(fn {group, elems} -> %{"age_group" => group, "count" => elems |> length} end)
+        |> Enum.map(fn {group, elems} -> %{group => elems |> length} end)
+        |> Enum.reduce(fn x, y -> Map.merge(x, y, fn _, v1, v2 -> v1 ++ v2 end) end)
 
       %{category => filtered}
     end
+    |> Enum.reduce(fn x, y -> Map.merge(x, y, fn _, v1, v2 -> v1 ++ v2 end) end)
   end
 
   defp partition_by_gender(gender) do
     case gender do
-      "female" -> :female
-      "male" -> :male
-      _ -> :other
+      "female" -> "female"
+      "male" -> "male"
+      _ -> "other"
     end
   end
 

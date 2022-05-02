@@ -12,3 +12,4 @@ Create an Elixir console app where it’s possible to ask for the following info
    - The average height of the female characters
 3. The age distribution of the characters by gender (where the gender can be “male”, “female” and “other”).
    The age groups are: “below 21”, “between 21 and 40", “above 40” and “unknown”. The result should be a Map(String, Map(String, Integer)).
+%{"male" => %{young => 4}}
