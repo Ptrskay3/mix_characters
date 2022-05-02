@@ -7,11 +7,7 @@ defmodule Csv.Math do
   end
 
   def heaviest(state) do
-    names = state |> Csv.Query.get_column(:name)
-    masses = state |> Csv.Query.get_column(:mass)
-
-    names
-    |> Stream.zip(masses)
+    Csv.Query.get_columns(state, [:name, :mass])
     |> Stream.filter(fn {_, mass} -> !is_nil(mass) end)
     |> Stream.map(fn {name, mass} -> {name, to_number(mass)} end)
     |> Stream.reject(fn {_, mass} -> !mass end)
