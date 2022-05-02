@@ -12,6 +12,14 @@ defmodule Csv.Server do
     GenServer.call(pid, :heaviest)
   end
 
+  def average_height_by(pid, :female) do
+    GenServer.call(pid, {:avg_height, :female})
+  end
+
+  def average_height_by(pid, :male) do
+    GenServer.call(pid, {:avg_height, :male})
+  end
+
   # Server API
 
   @impl true
@@ -21,6 +29,19 @@ defmodule Csv.Server do
 
   @impl true
   def handle_call(:heaviest, _from, state) do
-    {:reply, state, state}
+    {name, mass} = Csv.Math.heaviest(state)
+    {:reply, "The heaviest is #{name}, with #{mass}!", state}
+  end
+
+  @impl true
+  def handle_call({:avg_height, :female}, _from, state) do
+    avg = Csv.Math.average_height_by_gender(state, "female")
+    {:reply, "The average height among females is #{avg}!", state}
+  end
+
+  @impl true
+  def handle_call({:avg_height, :male}, _from, state) do
+    avg = Csv.Math.average_height_by_gender(state, "male")
+    {:reply, "The average height among males is #{avg}!", state}
   end
 end
