@@ -1,4 +1,5 @@
 defmodule Csv.Math do
+  
   def heaviest(state) do
     Csv.Query.get_columns(state, [:name, :mass])
     |> Stream.filter(fn {_, mass} -> !is_nil(mass) end)
