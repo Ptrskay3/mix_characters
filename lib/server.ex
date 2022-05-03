@@ -3,9 +3,9 @@ defmodule Csv.Server do
 
   # Client API
 
-  def start_link(file \\ "./static/characters.csv") do
-    state = Csv.get_file(file) |> Csv.parse()
-    GenServer.start_link(__MODULE__, state)
+  def start_link(args) do
+    state = File.read!(args) |> Csv.File.parse()
+    GenServer.start_link(__MODULE__, state, name: __MODULE__)
   end
 
   def heaviest(pid) do

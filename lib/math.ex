@@ -7,10 +7,10 @@ defmodule Csv.Math do
     |> Enum.max_by(fn {_, mass} -> mass end)
   end
 
-  def average_height_by_gender(state, target) do
+  def average_height_by_gender(state, target_gender) do
     valid_rows =
       Csv.Query.get_columns(state, [:gender, :height])
-      |> Stream.filter(fn {gender, _} -> gender == target end)
+      |> Stream.filter(fn {gender, _} -> gender == target_gender end)
       |> Stream.filter(fn {_, height} -> !is_nil(height) end)
       |> Stream.map(fn {_, height} -> to_number(height) end)
       |> Stream.reject(fn height -> !height end)
@@ -30,13 +30,13 @@ defmodule Csv.Math do
       statistics =
         rows
         |> List.flatten()
-        |> Enum.map(fn {gender, age} ->
+        |> Enum.map(fn {_, age} ->
           case String.ends_with?(age, "BBY") do
-            true -> {gender, String.trim_trailing(age, "BBY") |> to_number}
-            false -> {gender, age}
+            true -> String.trim_trailing(age, "BBY") |> to_number
+            false -> age
           end
         end)
-        |> Enum.frequencies_by(fn {_, age} -> partition_by_age(age) end)
+        |> Enum.frequencies_by(&partition_by_age(&1))
 
       %{category => statistics}
     end
