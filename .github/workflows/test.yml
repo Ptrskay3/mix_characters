@@ -1,13 +1,32 @@
+name: Test
 on: push
 
 jobs:
-  test:
+  main:
     runs-on: ubuntu-latest
+    env:
+      MIX_ENV: test
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-elixir@v1
+      - name: Install Erlang & Elixir
+        uses: erlef/setup-beam@v1
         with:
-          otp-version: '24.3'
-          elixir-version: '1.10.4'
-      - run: mix deps.get
-      - run: mix test
+          otp-version: '24.0'
+          elixir-version: '1.13.0'
+      - name: Cache Mix
+        uses: actions/cache@v2
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-
+      - name: Install mix dependencies
+        run: mix deps.get
+      - name: Check formatting
+        run: mix format --check-formatted
+      - name: Check warnings
+        run: mix compile --warnings-as-errors
+      - name: Run tests
+        run: mix test
