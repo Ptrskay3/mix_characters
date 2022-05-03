@@ -1,3 +1,5 @@
+[![Test](https://github.com/Ptrskay3/mix_characters/actions/workflows/test.yml/badge.svg)](https://github.com/Ptrskay3/mix_characters/actions/workflows/test.yml)
+
 ## Original problem statement
 
 The `static/characters.csv` file contains the list of characters appeared in the Star Wars universe.
