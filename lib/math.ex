@@ -1,5 +1,7 @@
 defmodule Csv.Math do
-  
+  @type state :: [Csv.Row.row()]
+
+  @spec heaviest(state) :: {String.t(), float()}
   def heaviest(state) do
     Csv.Query.get_columns(state, [:name, :mass])
     |> Stream.filter(fn {_, mass} -> !is_nil(mass) end)
@@ -8,6 +10,7 @@ defmodule Csv.Math do
     |> Enum.max_by(fn {_, mass} -> mass end)
   end
 
+  @spec average_height_by_gender(state, String.t()) :: float()
   def average_height_by_gender(state, target_gender) do
     valid_rows =
       Csv.Query.get_columns(state, [:gender, :height])
@@ -22,6 +25,7 @@ defmodule Csv.Math do
     sum / count
   end
 
+  @spec distribution_by_age(state) :: map()
   def distribution_by_age(state) do
     groups =
       Csv.Query.get_columns(state, [:gender, :birth_year])

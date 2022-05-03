@@ -1,4 +1,5 @@
 defmodule Csv.File do
+  @spec parse(String.t()) :: list
   def parse(content) do
     [_header | rows] = content |> String.split("\n", trim: true)
 

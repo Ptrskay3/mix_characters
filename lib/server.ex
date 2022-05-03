@@ -19,6 +19,10 @@ defmodule Csv.Server do
     GenServer.call(pid, :age_distribution)
   end
 
+  def rows(pid) do
+    GenServer.call(pid, :rows)
+  end
+
   # Server API
 
   @impl true
@@ -53,5 +57,10 @@ defmodule Csv.Server do
   def handle_call(:age_distribution, _from, state) do
     stats = Csv.Math.distribution_by_age(state)
     {:reply, stats, state}
+  end
+
+  @impl true
+  def handle_call(:rows, _from, state) do
+    {:reply, state, state}
   end
 end
