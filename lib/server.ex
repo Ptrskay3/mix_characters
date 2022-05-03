@@ -3,11 +3,6 @@ defmodule Csv.Server do
 
   # Client API
 
-  def start_link(args) do
-    state = File.read!(args) |> Csv.File.parse()
-    GenServer.start_link(__MODULE__, state, name: __MODULE__)
-  end
-
   def heaviest(pid) do
     GenServer.call(pid, :heaviest)
   end
@@ -29,6 +24,11 @@ defmodule Csv.Server do
   @impl true
   def init(rows) do
     {:ok, rows}
+  end
+
+  def start_link(args) do
+    state = File.read!(args) |> Csv.File.parse()
+    GenServer.start_link(__MODULE__, state, name: __MODULE__)
   end
 
   @impl true
