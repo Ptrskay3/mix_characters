@@ -31,7 +31,7 @@ defmodule Csv.Server do
   end
 
   def start_link(args) do
-    state = File.read!(args) |> Csv.File.parse()
+    state = File.read!(args) |> Csv.Parse.parse()
     GenServer.start_link(__MODULE__, state, name: __MODULE__)
   end
 
