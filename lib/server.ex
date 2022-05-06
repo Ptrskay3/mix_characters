@@ -3,24 +3,24 @@ defmodule Csv.Server do
 
   # Client API
 
-  def heaviest(pid) do
-    GenServer.call(pid, :heaviest)
+  def heaviest() do
+    GenServer.call(__MODULE__, :heaviest)
   end
 
-  def average_height_by(pid, :female) do
-    GenServer.call(pid, {:avg_height, :female})
+  def average_height_by(:female) do
+    GenServer.call(__MODULE__, {:avg_height, :female})
   end
 
-  def average_height_by(pid, :male) do
-    GenServer.call(pid, {:avg_height, :male})
+  def average_height_by(:male) do
+    GenServer.call(__MODULE__, {:avg_height, :male})
   end
 
-  def distribution_by_age(pid) do
-    GenServer.call(pid, :age_distribution)
+  def distribution_by_age() do
+    GenServer.call(__MODULE__, :age_distribution)
   end
 
-  def rows(pid) do
-    GenServer.call(pid, :rows)
+  def rows() do
+    GenServer.call(__MODULE__, :rows)
   end
 
   # Server API

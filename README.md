@@ -23,23 +23,23 @@ The API is available inside the `Csv.Server` module.
 1.
 
 ```elixir
-iex(1)> Csv.Server.heaviest(Csv.Server)
+iex(1)> Csv.Server.heaviest()
 "The heaviest is Jabba Desilijic Tiure, with 1358.0!"
 ```
 
 2.
 
 ```elixir
-iex(2)> Csv.Server.average_height_by(Csv.Server, :male)
+iex(2)> Csv.Server.average_height_by(:male)
 "The average height among males is 179.23728813559322!"
-iex(3)> Csv.Server.average_height_by(Csv.Server, :female)
+iex(3)> Csv.Server.average_height_by(:female)
 "The average height among females is 165.47058823529412!"
 ```
 
 3.
 
 ```elixir
-iex(4)> Csv.Server.distribution_by_age(Csv.Server)
+iex(4)> Csv.Server.distribution_by_age()
 %{
   "female" => %{"above 40" => 7, "below 21" => 1, "unknown" => 11},
   "male" => %{
